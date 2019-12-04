@@ -301,16 +301,14 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      */
     public void removeSelectedItem() {
         if (null != list && null != selectedList) {
-            int i = 0;
-            Iterator<T> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                T next = iterator.next();
-                if (selectedList.contains(next)) {
-                    iterator.remove();
-                    selectedList.remove(next);
+            //循环内删除元素需要倒叙删除
+            for (int i = list.size() - 1; i >= 0; i--) {
+                T t = list.get(i);
+                if (selectedList.contains(t)) {
+                    list.remove(i);
+                    selectedList.remove(t);
                     removeItem(i);
                 }
-                i++;
             }
             callBackSelectedCount();
         }
