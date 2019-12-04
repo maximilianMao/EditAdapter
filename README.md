@@ -2,7 +2,7 @@
 
 ---
 
-### 添加`SimpleUILoader`到你的项目
+### 添加`EditAdapter`到你的项目
 
 1. 在项目的 `build.gradle` 中添加：
 
