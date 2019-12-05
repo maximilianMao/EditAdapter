@@ -1,6 +1,5 @@
 package top.i97.editadapterlib.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,15 +9,19 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
 import top.i97.editadapterlib.inter.ISelected;
+import top.i97.editadapterlib.viewholder.BaseEditViewHolder;
+import top.i97.editadapterlib.viewholder.EmptyViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 编辑模式适配器
+ *
  * @author Plain
  * @date 2019/12/4 6:38 下午
  */
-public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.EditViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adapter<BaseEditViewHolder> {
 
     private static final String TAG = EditAdapter.class.getSimpleName();
 
@@ -40,6 +43,11 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * 点击模式 - 仅CheckBox
      */
     public static final int TOUCH_MODE_CHILD = 0x999;
+
+    /**
+     * 无数据
+     */
+    private static final int EMPTY_DATA = 0x10001;
 
     /**
      * 当前模式
@@ -65,6 +73,11 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * 布局ID
      */
     private int layoutId = 0;
+
+    /**
+     * 空数据布局ID
+     */
+    private int emptyLayoutId = 0;
 
     /**
      * 获取当前模式
@@ -94,34 +107,36 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
     }
 
     public EditAdapter(List<T> list) {
-        if (null == list) {
-            throw new IllegalArgumentException("数据不能为空");
-        }
-        this.list = list;
+        this(list, 0);
     }
 
     public EditAdapter(List<T> list, int layoutId) {
-        if (null == list) {
-            throw new IllegalArgumentException("数据不能为空");
-        }
-        if (0 == layoutId) {
-            throw new IllegalArgumentException("布局不能为空");
-        }
+        this(list, layoutId, 0);
+    }
+
+    public EditAdapter(List<T> list, int layoutId, int emptyLayoutId) {
         this.list = list;
         this.layoutId = layoutId;
+        this.emptyLayoutId = emptyLayoutId;
     }
 
     @NonNull
     @Override
-    public VH onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public BaseEditViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+        Log.e(TAG, i + "");
+        if (i == EMPTY_DATA) {
+            return createEmptyViewHolder(inflater.inflate(emptyLayoutId, viewGroup, false));
+        }
         return createViewHolder(inflater.inflate(layoutId, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VH vh, int i) {
-        editKernel(list.get(i), vh);
-        convert(list.get(i), vh);
+    public void onBindViewHolder(@NonNull BaseEditViewHolder vh, int i) {
+        if (!(vh instanceof EmptyViewHolder)){
+            editKernel(list.get(i), vh);
+            convert(list.get(i), vh);
+        }
     }
 
     /**
@@ -130,7 +145,7 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void editKernel(T t, VH vh) {
+    private void editKernel(T t, BaseEditViewHolder vh) {
         View hideView = vh.getHideView();
         if (null != hideView) {
             if (curMode == EDIT_MODE) {
@@ -156,7 +171,7 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void touchModeKernel(T t, VH vh) {
+    private void touchModeKernel(T t, BaseEditViewHolder vh) {
         if (getTouchMode() == TOUCH_MODE_ROOT) {
             touchModeRootKernel(t, vh);
         } else if (getTouchMode() == TOUCH_MODE_CHILD) {
@@ -172,7 +187,7 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void touchModeRootKernel(T t, VH vh) {
+    private void touchModeRootKernel(T t, BaseEditViewHolder vh) {
         View itemView = vh.itemView;
         CheckBox checkBox = vh.getCheckBox();
         checkBox.setClickable(false);
@@ -191,7 +206,7 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void touchModeChildKernel(T t, VH vh) {
+    private void touchModeChildKernel(T t, BaseEditViewHolder vh) {
         CheckBox checkBox = vh.getCheckBox();
         checkBox.setClickable(true);
         checkBox.setChecked(t.isSelected());
@@ -246,10 +261,10 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
     /**
      * 数据绑定
      *
-     * @param item       Item
-     * @param viewHolder ViewHolder
+     * @param item Item
+     * @param vh   ViewHolder
      */
-    protected abstract void convert(T item, VH viewHolder);
+    protected abstract void convert(T item, BaseEditViewHolder vh);
 
     /**
      * 创建ViewHolder
@@ -257,7 +272,15 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      * @param itemView itemView
      * @return ViewHolder
      */
-    protected abstract VH createViewHolder(View itemView);
+    protected abstract BaseEditViewHolder createViewHolder(View itemView);
+
+    /**
+     * 创建空数据ViewHolder
+     *
+     * @param itemView itemView
+     * @return ViewHolder
+     */
+    protected abstract BaseEditViewHolder createEmptyViewHolder(View itemView);
 
     /**
      * 获取点击模式
@@ -270,10 +293,10 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
 
     @Override
     public int getItemViewType(int position) {
-        if (curMode == EDIT_MODE) {
-            return EDIT_MODE;
+        if (null == list || 0 == list.size()) {
+            return EMPTY_DATA;
         }
-        return SHOW_MODE;
+        return super.getItemViewType(position);
     }
 
     /**
@@ -382,22 +405,10 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
 
     @Override
     public int getItemCount() {
-        if (null == list) {
-            return 0;
+        if (null == list || 0 == list.size()) {
+            return 1;
         }
         return list.size();
-    }
-
-    public static abstract class EditViewHolder extends RecyclerView.ViewHolder {
-
-        public EditViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
-
-        protected abstract View getHideView();
-
-        protected abstract CheckBox getCheckBox();
-
     }
 
 }

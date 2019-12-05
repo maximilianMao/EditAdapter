@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
 
-        for (int i = 0; i <= 30; i++) {
+        for (int i = 0; i <= 10; i++) {
             dataBeanList.add(new MyDataBean("标题" + i, "这是一条内容: " + i));
         }
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<MyDataBean> getList() {
         List<MyDataBean> myDataBeans = new ArrayList<>();
-        for (int i = 1; i <= Math.random() * 200 + 1; i++) {
+        for (int i = 1; i <= Math.random() * 20; i++) {
             myDataBeans.add(new MyDataBean("标题" + i, "这是一条内容: " + i));
         }
         return myDataBeans;

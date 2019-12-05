@@ -1,14 +1,14 @@
 package top.i97.editadapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import top.i97.editadapterlib.adapter.EditAdapter;
+import top.i97.editadapterlib.viewholder.BaseEditViewHolder;
+import top.i97.editadapterlib.viewholder.EmptyViewHolder;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ import java.util.List;
  * @author Plain
  * @date 2019/12/4 7:05 下午
  */
-public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewHolder> {
+public class MyEditAdapter extends EditAdapter<MyDataBean> {
 
     private List<MyDataBean> list;
 
     public MyEditAdapter(List<MyDataBean> list) {
-        super(list, R.layout.item_edit);
+        super(list, R.layout.item_edit,R.layout.item_empty);
         this.list = list;
     }
 
@@ -33,19 +33,23 @@ public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewH
         notifyDataSetChanged();
     }
 
-    public MyEditAdapter(List<MyDataBean> list, int layoutId) {
-        super(list, layoutId);
+    @Override
+    protected void convert(MyDataBean item, BaseEditViewHolder vh) {
+        if (vh instanceof MyViewHolder){
+            MyViewHolder viewHolder = (MyViewHolder) vh;
+            viewHolder.tvTitle.setText(item.getTitle());
+            viewHolder.tvContent.setText(item.getContent());
+        }
     }
 
     @Override
-    protected void convert(MyDataBean item, MyViewHolder viewHolder) {
-        viewHolder.tvTitle.setText(item.getTitle());
-        viewHolder.tvContent.setText(item.getContent());
-    }
-
-    @Override
-    protected MyViewHolder createViewHolder(View itemView) {
+    protected BaseEditViewHolder createViewHolder(View itemView) {
         return new MyViewHolder(itemView);
+    }
+
+    @Override
+    protected BaseEditViewHolder createEmptyViewHolder(View itemView) {
+        return new EmptyViewHolder(itemView);
     }
 
     @Override
@@ -54,7 +58,7 @@ public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewH
         return EditAdapter.TOUCH_MODE_ROOT;
     }
 
-    public static class MyViewHolder extends EditAdapter.EditViewHolder {
+    public static class MyViewHolder extends BaseEditViewHolder {
 
         @BindView(R.id.checkbox)
         CheckBox checkBox;
@@ -69,14 +73,16 @@ public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewH
         }
 
         @Override
-        protected View getHideView() {
+        public View getHideView() {
             return checkBox;
         }
 
         @Override
-        protected CheckBox getCheckBox() {
+        public CheckBox getCheckBox() {
             return checkBox;
         }
     }
+
+
 
 }
