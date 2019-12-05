@@ -15,4 +15,9 @@ public interface IEditSelectedListener {
      */
     void onSelectedItemCount(int count);
 
+    /**
+     * 回调长按进入编辑模式
+     */
+    void onLongClickEnterEditMode();
+
 }

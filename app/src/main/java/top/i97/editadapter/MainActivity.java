@@ -17,6 +17,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import top.i97.editadapterlib.adapter.EditAdapter;
+import top.i97.editadapterlib.inter.IEditSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         myEditAdapter = new MyEditAdapter(dataBeanList);
-        myEditAdapter.setEditSelectedListener(count -> tvCheckItemCount.setText(String.format("共选中%s项", count)));
+        myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
+            @Override
+            public void onSelectedItemCount(int count) {
+                tvCheckItemCount.setText(String.format("共选中%s项", count));
+            }
+
+            @Override
+            public void onLongClickEnterEditMode() {
+                enterEditMode();
+            }
+        });
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvList.setLayoutManager(manager);
         rvList.setAdapter(myEditAdapter);
@@ -92,18 +103,26 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "当前模式: " + curShowMode);
         switch (curShowMode) {
             case EditAdapter.SHOW_MODE:
-                smartRefreshLayout.setEnableRefresh(false);
-                myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
-                edit.setText("完成");
-                rlEditView.setVisibility(View.VISIBLE);
+                enterEditMode();
                 break;
             case EditAdapter.EDIT_MODE:
-                smartRefreshLayout.setEnableRefresh(true);
-                myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
-                edit.setText("编辑");
-                rlEditView.setVisibility(View.GONE);
+                enterShowMode();
                 break;
         }
+    }
+
+    private void enterShowMode(){
+        smartRefreshLayout.setEnableRefresh(true);
+        myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
+        edit.setText("编辑");
+        rlEditView.setVisibility(View.GONE);
+    }
+
+    private void enterEditMode(){
+        smartRefreshLayout.setEnableRefresh(false);
+        myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
+        edit.setText("完成");
+        rlEditView.setVisibility(View.VISIBLE);
     }
 
     /**

@@ -137,9 +137,26 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
                 hideView.setVisibility(View.VISIBLE);
             } else {
                 hideView.setVisibility(View.GONE);
+                vh.itemView.setOnLongClickListener(v -> {
+                    if (null != editSelectedListener) {
+                        editSelectedListener.onLongClickEnterEditMode();
+                    }
+                    appendItemForSelectedList(t);
+                    return true;
+                });
             }
         }
 
+        touchModeKernel(t, vh);
+    }
+
+    /**
+     * 根据当前{@link EditAdapter#getTouchMode()}点击模式，调用不用的方案
+     *
+     * @param t  Data
+     * @param vh ViewHolder
+     */
+    private void touchModeKernel(T t, VH vh) {
         if (getTouchMode() == TOUCH_MODE_ROOT) {
             touchModeRootKernel(t, vh);
         } else if (getTouchMode() == TOUCH_MODE_CHILD) {
@@ -198,12 +215,30 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      */
     private void processSelected(T t, boolean isSelected) {
         if (isSelected) {
-            t.setSelected(true);
-            selectedList.add(t);
+            appendItemForSelectedList(t);
         } else {
-            t.setSelected(false);
-            selectedList.remove(t);
+            removeItemForSelectedList(t);
         }
+    }
+
+    /**
+     * 添加Item到已选择列表
+     *
+     * @param t Data
+     */
+    private void appendItemForSelectedList(T t) {
+        t.setSelected(true);
+        selectedList.add(t);
+    }
+
+    /**
+     * 删除Item从已选择列表
+     *
+     * @param t Data
+     */
+    private void removeItemForSelectedList(T t){
+        t.setSelected(false);
+        selectedList.remove(t);
     }
 
     /**
