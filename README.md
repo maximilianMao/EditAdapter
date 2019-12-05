@@ -174,7 +174,7 @@ myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
   	//回调长按进入编辑模式
     @Override
     public void onLongClickEnterEditMode() {
-        enterEditMode();
+        myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
     }
 });
 ```
