@@ -107,7 +107,7 @@ protected void convert(MyDataBean item, BaseEditViewHolder vh) {
 }
 ```
 
-7、自定义ViewHolder，继承`BaseEditViewHolder`，并重写`getHideView`和`getCheckBox`方法，返回隐藏区域View和选择按钮🔘
+7. 自定义ViewHolder，继承`BaseEditViewHolder`，并重写`getHideView`和`getCheckBox`方法，返回隐藏区域View和选择按钮🔘
 
 ```java
 public static class MyViewHolder extends BaseEditViewHolder {
@@ -131,35 +131,35 @@ public static class MyViewHolder extends BaseEditViewHolder {
 
 8. 在`Activity`或`Fragment`中更新UI
 
-- 进入编辑模式
+  - 进入编辑模式
 
-  ```java
-   myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
-  ```
+    ```java
+    myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
+    ```
 
-- 进入展示模式
+  - 进入展示模式
 
-  ```java
-  myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
-  ```
+    ```java
+    myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
+    ```
 
-- 全选所有项
+  - 全选所有项
 
-  ```java
-  myEditAdapter.selectedAllItem();
-  ```
+    ```java
+    myEditAdapter.selectedAllItem();
+    ```
 
-- 反选所有项
+  - 反选所有项
 
-  ```java
-  myEditAdapter.unSelectedAllItem();
-  ```
+    ```java
+    myEditAdapter.unSelectedAllItem();
+    ```
 
-- 删除选择项
+  - 删除选择项
 
-  ```java
-  myEditAdapter.removeSelectedItem();
-  ```
+    ```java
+    myEditAdapter.removeSelectedItem();
+    ```
 
 9. 注册事件监听器
 
