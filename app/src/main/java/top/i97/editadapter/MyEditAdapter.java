@@ -18,8 +18,17 @@ import java.util.List;
  */
 public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewHolder> {
 
+    private List<MyDataBean> list;
+
     public MyEditAdapter(List<MyDataBean> list) {
         super(list, R.layout.item_edit);
+        this.list = list;
+    }
+
+    public void updateList(List<MyDataBean> newList){
+        list.clear();
+        list.addAll(newList);
+        notifyDataSetChanged();
     }
 
     public MyEditAdapter(List<MyDataBean> list, int layoutId) {

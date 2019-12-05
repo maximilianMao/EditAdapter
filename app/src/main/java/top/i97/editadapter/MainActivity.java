@@ -1,5 +1,6 @@
 package top.i97.editadapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import top.i97.editadapterlib.adapter.EditAdapter;
 
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.edit)
     TextView edit;
+    @BindView(R.id.smartRefreshLayout)
+    SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.rvList)
     RecyclerView rvList;
     @BindView(R.id.rlEditView)
@@ -47,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        for (int i = 1; i <= 30; i++) {
+
+        for (int i = 0; i <= 30; i++) {
             dataBeanList.add(new MyDataBean("标题" + i));
         }
 
@@ -57,6 +64,22 @@ public class MainActivity extends AppCompatActivity {
         rvList.setLayoutManager(manager);
         rvList.setAdapter(myEditAdapter);
 
+        //模拟下拉刷新
+        smartRefreshLayout.setEnableOverScrollBounce(true);
+        smartRefreshLayout.setEnableOverScrollDrag(true);
+        smartRefreshLayout.setOnRefreshListener(refreshLayout -> rvList.postDelayed(() -> {
+            myEditAdapter.updateList(getList());
+            smartRefreshLayout.finishRefresh(true);
+        }, 1000));
+
+    }
+
+    private List<MyDataBean> getList() {
+        List<MyDataBean> myDataBeans = new ArrayList<>();
+        for (int i = 1; i <= Math.random() * 200 + 1; i++) {
+            myDataBeans.add(new MyDataBean("标题" + i));
+        }
+        return myDataBeans;
     }
 
     /**
@@ -69,11 +92,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "当前模式: " + curShowMode);
         switch (curShowMode) {
             case EditAdapter.SHOW_MODE:
+                smartRefreshLayout.setEnableRefresh(false);
                 myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
                 edit.setText("完成");
                 rlEditView.setVisibility(View.VISIBLE);
                 break;
             case EditAdapter.EDIT_MODE:
+                smartRefreshLayout.setEnableRefresh(true);
                 myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
                 edit.setText("编辑");
                 rlEditView.setVisibility(View.GONE);
