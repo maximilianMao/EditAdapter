@@ -1,6 +1,14 @@
+<div align="center">
+  <img src="./app/src/main/ic_launcher-web.png" width='150px' alt="ic_launcher-web">
+</div>
+
 ## EditAdapter
 
----
+>适用于RecyclerView的适配器🚥，快速集成列表编辑模式🧾
+
+### 演示
+
+<img src='screenshot/demo.gif' width = '300' style="float:left"   />
 
 ### 添加`EditAdapter`到你的项目
 

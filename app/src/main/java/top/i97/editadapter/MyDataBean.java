@@ -11,9 +11,11 @@ import top.i97.editadapterlib.entity.SelectedBean;
 public class MyDataBean extends SelectedBean {
 
     private String title;
+    private String content;
 
-    public MyDataBean(String title) {
+    public MyDataBean(String title, String content) {
         this.title = title;
+        this.content = content;
     }
 
     public String getTitle() {
@@ -22,5 +24,13 @@ public class MyDataBean extends SelectedBean {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

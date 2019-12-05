@@ -1,5 +1,6 @@
 package top.i97.editadapterlib.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,7 +12,6 @@ import top.i97.editadapterlib.inter.IEditSelectedListener;
 import top.i97.editadapterlib.inter.ISelected;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -228,7 +228,9 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      */
     private void appendItemForSelectedList(T t) {
         t.setSelected(true);
-        selectedList.add(t);
+        if (!selectedList.contains(t)) {
+            selectedList.add(t);
+        }
     }
 
     /**
@@ -236,7 +238,7 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      *
      * @param t Data
      */
-    private void removeItemForSelectedList(T t){
+    private void removeItemForSelectedList(T t) {
         t.setSelected(false);
         selectedList.remove(t);
     }
@@ -306,14 +308,12 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      */
     public void selectedAllItem() {
         if (null != list && null != selectedList) {
-            for (T t : list) {
-                t.setSelected(true);
-                if (!selectedList.contains(t)) {
-                    selectedList.add(t);
-                }
+            for (int i = 0; i < list.size(); i++) {
+                T t = list.get(i);
+                appendItemForSelectedList(t);
+                notifyItemChanged(i);
             }
             callBackSelectedCount();
-            notifyDataSetChanged();
         }
     }
 
@@ -322,12 +322,12 @@ public abstract class EditAdapter<T extends ISelected, VH extends EditAdapter.Ed
      */
     public void unSelectedAllItem() {
         if (null != list && null != selectedList) {
-            for (T t : list) {
-                t.setSelected(false);
-                selectedList.remove(t);
+            for (int i = 0; i < list.size(); i++) {
+                T t = list.get(i);
+                removeItemForSelectedList(t);
+                notifyItemChanged(i);
             }
             callBackSelectedCount();
-            notifyDataSetChanged();
         }
     }
 

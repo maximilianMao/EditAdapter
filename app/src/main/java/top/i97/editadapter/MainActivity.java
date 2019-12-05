@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         for (int i = 0; i <= 30; i++) {
-            dataBeanList.add(new MyDataBean("标题" + i));
+            dataBeanList.add(new MyDataBean("标题" + i, "这是一条内容: " + i));
         }
 
         myEditAdapter = new MyEditAdapter(dataBeanList);
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         });
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvList.setLayoutManager(manager);
+        rvList.addItemDecoration(new LineItemDecoration(this, LineItemDecoration.VERTICAL_LIST));
         rvList.setAdapter(myEditAdapter);
 
         //模拟下拉刷新
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private List<MyDataBean> getList() {
         List<MyDataBean> myDataBeans = new ArrayList<>();
         for (int i = 1; i <= Math.random() * 200 + 1; i++) {
-            myDataBeans.add(new MyDataBean("标题" + i));
+            myDataBeans.add(new MyDataBean("标题" + i, "这是一条内容: " + i));
         }
         return myDataBeans;
     }
@@ -111,14 +112,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void enterShowMode(){
+    private void enterShowMode() {
         smartRefreshLayout.setEnableRefresh(true);
         myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
         edit.setText("编辑");
         rlEditView.setVisibility(View.GONE);
     }
 
-    private void enterEditMode(){
+    private void enterEditMode() {
         smartRefreshLayout.setEnableRefresh(false);
         myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
         edit.setText("完成");

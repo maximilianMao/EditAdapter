@@ -1,8 +1,10 @@
 package top.i97.editadapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +27,7 @@ public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewH
         this.list = list;
     }
 
-    public void updateList(List<MyDataBean> newList){
+    public void updateList(List<MyDataBean> newList) {
         list.clear();
         list.addAll(newList);
         notifyDataSetChanged();
@@ -38,6 +40,7 @@ public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewH
     @Override
     protected void convert(MyDataBean item, MyViewHolder viewHolder) {
         viewHolder.tvTitle.setText(item.getTitle());
+        viewHolder.tvContent.setText(item.getContent());
     }
 
     @Override
@@ -57,6 +60,8 @@ public class MyEditAdapter extends EditAdapter<MyDataBean, MyEditAdapter.MyViewH
         CheckBox checkBox;
         @BindView(R.id.tvTitle)
         TextView tvTitle;
+        @BindView(R.id.tvContent)
+        TextView tvContent;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
