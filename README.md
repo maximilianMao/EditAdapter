@@ -129,9 +129,58 @@ public static class MyViewHolder extends BaseEditViewHolder {
 }
 ```
 
+8. 在`Activity`或`Fragment`中更新UI
+
+- 进入编辑模式
+
+  ```java
+   myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
+  ```
+
+- 进入展示模式
+
+  ```java
+  myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
+  ```
+
+- 全选所有项
+
+  ```java
+  myEditAdapter.selectedAllItem();
+  ```
+
+- 反选所有项
+
+  ```java
+  myEditAdapter.unSelectedAllItem();
+  ```
+
+- 删除选择项
+
+  ```java
+  myEditAdapter.removeSelectedItem();
+  ```
+
+9. 注册事件监听器
+
+```java
+myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
+  	//回调当前选中项数量
+    @Override
+    public void onSelectedItemCount(int count) {
+        tvCheckItemCount.setText(String.format("共选中%s项", count));
+    }
+		
+  	//回调长按进入编辑模式
+    @Override
+    public void onLongClickEnterEditMode() {
+        enterEditMode();
+    }
+});
+```
+
 ### 其它
 
 1. 有问题欢迎提交`issues`
 
 2. 状态图标来源[iconfont](https://www.iconfont.cn/)，侵删
-
