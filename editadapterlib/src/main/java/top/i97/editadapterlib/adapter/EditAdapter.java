@@ -133,7 +133,7 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
 
     @Override
     public void onBindViewHolder(@NonNull BaseEditViewHolder vh, int i) {
-        if (!(vh instanceof EmptyViewHolder)){
+        if (!(vh instanceof EmptyViewHolder)) {
             editKernel(list.get(i), vh);
             convert(list.get(i), vh);
         }
@@ -392,6 +392,15 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     private void removeItem(int pos) {
         notifyItemRemoved(pos);
         notifyItemRangeChanged(0, getItemCount());
+    }
+
+    /**
+     * 获取是否选择全部数据
+     *
+     * @return isSelectedAllItem
+     */
+    public boolean isSelectedAllItem() {
+        return getSelectedItemCount() == list.size();
     }
 
     /**

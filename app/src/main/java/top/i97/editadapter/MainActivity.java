@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     private List<MyDataBean> dataBeanList = new ArrayList<>();
     private MyEditAdapter myEditAdapter;
-    private boolean isSelectedAllMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,11 +130,9 @@ public class MainActivity extends AppCompatActivity {
      */
     @OnClick(R.id.btnSelectAll)
     public void selectedAllItem() {
-        if (isSelectedAllMode) {
-            isSelectedAllMode = false;
+        if (myEditAdapter.isSelectedAllItem()) {
             myEditAdapter.unSelectedAllItem();
         } else {
-            isSelectedAllMode = true;
             myEditAdapter.selectedAllItem();
         }
 
