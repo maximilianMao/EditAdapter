@@ -161,6 +161,12 @@ public static class MyViewHolder extends BaseEditViewHolder {
     myEditAdapter.removeSelectedItem();
     ```
 
+  - 判断是否选择全部 (用来判断点击全选按钮🔘时，应该调用`selectedAllItem`还是`unSelectedAllItem`)
+
+    ```java
+    myEditAdapter.isSelectedAllItem()
+    ```
+
 9. 注册事件监听器
 
 ```java
