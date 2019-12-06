@@ -185,6 +185,34 @@ myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
 });
 ```
 
+### 更新日志
+
+#### v1.0.3-alpha
+
+本次更新内容如下
+
+- fix:手动选择全部item后，再次点击全选按钮无效的问题
+- add:为解决上述bug，新增一个方法判断当前是否选择全部
+
+#### v1.0.2-alpha
+
+本次更新内容如下
+
+- add:长按进入编辑模式
+- add:设置空数据视图
+- modify:优化代码逻辑
+
+#### v1.0.1-alpha
+
+本次更新内容如下
+
+- fix:滑到最底部删除元素时发生"Inconsistency detected"的问题
+
+#### v1.0-alpha
+
+- ~~首个预览版~~
+- 有些问题，请使用新版
+
 ### 其它
 
 1. 有问题欢迎提交`issues`
