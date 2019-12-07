@@ -131,13 +131,13 @@ public static class MyViewHolder extends BaseEditViewHolder {
 
 8. 在`Activity`或`Fragment`中更新UI
 
-  - 进入编辑模式
+  - 指定模式为`EDIT_MODE`（进入编辑模式）
 
     ```java
     myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
     ```
 
-  - 进入展示模式
+  - 指定模式为`SHOW_MODE`（退出编辑模式）
 
     ```java
     myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
@@ -183,6 +183,20 @@ myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
         myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
     }
 });
+```
+
+10、如果使用下拉刷新控件，记得在进入编辑模式后，关闭下拉刷新（以SmartRefreshLayout为例）
+
+进入编辑模式后
+
+```java
+smartRefreshLayout.setEnableRefresh(false);
+```
+
+退出编辑模式后
+
+```java
+smartRefreshLayout.setEnableRefresh(true);
 ```
 
 ### 更新日志
