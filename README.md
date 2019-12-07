@@ -185,7 +185,7 @@ myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
 });
 ```
 
-10、如果使用下拉刷新控件，记得在进入编辑模式后，关闭下拉刷新（以SmartRefreshLayout为例）
+10、如果使用下拉刷新控件，记得在进入编辑模式后，关闭下拉刷新（以(SmartRefreshLayout)[https://github.com/scwang90/SmartRefreshLayout]为例）
 
 进入编辑模式后
 
