@@ -359,7 +359,7 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
      */
     public void removeSelectedItem() {
         if (null != list && null != selectedList) {
-            //循环内删除元素需要倒叙删除
+            //循环内删除元素需要倒序删除
             for (int i = list.size() - 1; i >= 0; i--) {
                 T t = list.get(i);
                 if (selectedList.contains(t)) {
