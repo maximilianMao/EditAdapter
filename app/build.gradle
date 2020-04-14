@@ -7,8 +7,8 @@ android {
         applicationId "top.i97.editadapter"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.3-alpha"
+        versionCode 10
+        versionName "1.0.4-stable"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -38,4 +38,5 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0'
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 }

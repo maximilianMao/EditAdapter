@@ -1,35 +1,36 @@
 package top.i97.editadapterlib.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import top.i97.editadapterlib.inter.IEditSelectedListener;
-import top.i97.editadapterlib.inter.ISelected;
-import top.i97.editadapterlib.viewholder.BaseEditViewHolder;
-import top.i97.editadapterlib.viewholder.EmptyViewHolder;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 编辑模式适配器（过时⚠️）
- *
- * <p>
- * 推荐使用{@link BaseQuickEditModeAdapter}
- * </p>
- *
- * @author Plain
- * @date 2019/12/4 6:38 下午
- */
-@Deprecated
-public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adapter<BaseEditViewHolder> {
+import top.i97.editadapterlib.inter.IEditKernelView;
+import top.i97.editadapterlib.inter.IEditSelectedListener;
+import top.i97.editadapterlib.inter.ISelected;
+import top.i97.editadapterlib.util.ListUtils;
 
-    private static final String TAG = EditAdapter.class.getSimpleName();
+/**
+ * name: BaseQuickEditModeAdapter
+ * desc: 基础编辑列表适配器
+ * date: 2020/4/14 1:06 PM
+ * version: v1.0
+ * author: Plain
+ * blog: https://plain-dev.com
+ * email: support@plain-dev.com
+ */
+public abstract class BaseQuickEditModeAdapter
+        <T extends ISelected, K extends BaseViewHolder>
+        extends BaseQuickAdapter
+        <T, K>
+        implements IEditKernelView
+        <K> {
 
     /**
      * 显示模式
@@ -43,17 +44,12 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     /**
      * 点击模式 - 整个Item
      */
-    public static final int TOUCH_MODE_ROOT = 0x666;
+    static final int TOUCH_MODE_ROOT = 0x666;
 
     /**
      * 点击模式 - 仅CheckBox
      */
-    public static final int TOUCH_MODE_CHILD = 0x999;
-
-    /**
-     * 无数据
-     */
-    private static final int EMPTY_DATA = 0x10001;
+    static final int TOUCH_MODE_CHILD = 0x999;
 
     /**
      * 当前模式
@@ -70,20 +66,9 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
      */
     private List<ISelected> selectedList = new ArrayList<>();
 
-    /**
-     * 列表数据
-     */
-    private List<T> list;
-
-    /**
-     * 布局ID
-     */
-    private int layoutId = 0;
-
-    /**
-     * 空数据布局ID
-     */
-    private int emptyLayoutId = 0;
+    public BaseQuickEditModeAdapter(int layoutResId, @Nullable List<T> data) {
+        super(layoutResId, data);
+    }
 
     /**
      * 获取当前模式
@@ -112,72 +97,79 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
         this.editSelectedListener = editSelectedListener;
     }
 
-    public EditAdapter(List<T> list) {
-        this(list, 0);
-    }
-
-    public EditAdapter(List<T> list, int layoutId) {
-        this(list, layoutId, 0);
-    }
-
-    public EditAdapter(List<T> list, int layoutId, int emptyLayoutId) {
-        this.list = list;
-        this.layoutId = layoutId;
-        this.emptyLayoutId = emptyLayoutId;
-    }
-
-    @NonNull
     @Override
-    public BaseEditViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        Log.e(TAG, i + "");
-        if (i == EMPTY_DATA) {
-            return createEmptyViewHolder(inflater.inflate(emptyLayoutId, viewGroup, false));
+    public void setOnItemChildClickListener(BaseQuickAdapter.OnItemChildClickListener listener) {
+        // 只有在展示模式才相应item点击事件
+        if (getCurMode() == SHOW_MODE) {
+            super.setOnItemChildClickListener(listener);
         }
-        return createViewHolder(inflater.inflate(layoutId, viewGroup, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BaseEditViewHolder vh, int i) {
-        if (!(vh instanceof EmptyViewHolder)) {
-            editKernel(list.get(i), vh);
-            convert(list.get(i), vh);
-        }
+    protected void convert(K helper, T item) {
+        editKernel(helper, item);
+        convertView(helper, item);
     }
+
+    protected abstract void convertView(K helper, T item);
+
+    @Override
+    public abstract CheckBox getCheckBox(K helper);
+
+    @Override
+    public abstract View getHideView(K helper);
 
     /**
      * 编辑模式核心
      *
-     * @param t  Data
      * @param vh ViewHolder
+     * @param t  Data
      */
-    private void editKernel(T t, BaseEditViewHolder vh) {
-        View hideView = vh.getHideView();
-        if (null != hideView) {
-            if (curMode == EDIT_MODE) {
-                hideView.setVisibility(View.VISIBLE);
-            } else {
-                hideView.setVisibility(View.GONE);
-                vh.itemView.setOnLongClickListener(v -> {
-                    if (null != editSelectedListener) {
-                        editSelectedListener.onLongClickEnterEditMode();
-                    }
+    private void editKernel(K vh, T t) {
+        View hideView = getHideView(vh);
+        if (null == hideView) {
+            throw new IllegalArgumentException("未指定HideView!!!");
+        }
+        if (curMode == EDIT_MODE) {
+            hideView.setVisibility(View.VISIBLE);
+            // 如果进入编辑模式，则进入编辑模式核心方法
+            touchModeKernel(t, vh);
+        } else {
+            hideView.setVisibility(View.GONE);
+            // 长按item进入编辑模式，进入的操作由外部实现
+            vh.itemView.setOnLongClickListener(v -> {
+                if (null != editSelectedListener) {
+                    editSelectedListener.onLongClickEnterEditMode();
                     appendItemForSelectedList(t);
+                    callBackSelectedCount();
                     return true;
-                });
-            }
+                }
+                return false;
+            });
         }
 
-        touchModeKernel(t, vh);
     }
 
     /**
-     * 根据当前{@link EditAdapter#getTouchMode()}点击模式，调用不用的方案
+     * 获取点击模式
+     *
+     * <p>
+     * 默认 {@link BaseQuickEditModeAdapter#TOUCH_MODE_ROOT}
+     * </p>
+     *
+     * @return 点击模式，有以下值可选
+     */
+    int getTouchMode() {
+        return TOUCH_MODE_ROOT;
+    }
+
+    /**
+     * 根据当前getTouchMode()点击模式，调用不用的方案
      *
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void touchModeKernel(T t, BaseEditViewHolder vh) {
+    private void touchModeKernel(T t, K vh) {
         if (getTouchMode() == TOUCH_MODE_ROOT) {
             touchModeRootKernel(t, vh);
         } else if (getTouchMode() == TOUCH_MODE_CHILD) {
@@ -188,14 +180,17 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     }
 
     /**
-     * 点击模式 {@link EditAdapter#TOUCH_MODE_ROOT} 核心
+     * 点击模式 TOUCH_MODE_ROOT 核心
      *
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void touchModeRootKernel(T t, BaseEditViewHolder vh) {
+    private void touchModeRootKernel(T t, K vh) {
         View itemView = vh.itemView;
-        CheckBox checkBox = vh.getCheckBox();
+        CheckBox checkBox = getCheckBox(vh);
+        if (null == checkBox) {
+            throw new IllegalArgumentException("未指定CheckBox!!!");
+        }
         checkBox.setClickable(false);
         checkBox.setChecked(t.isSelected());
         itemView.setOnClickListener(v -> {
@@ -207,13 +202,13 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     }
 
     /**
-     * 点击模式 {@link EditAdapter#TOUCH_MODE_CHILD} 核心
+     * 点击模式 TOUCH_MODE_CHILD 核心
      *
      * @param t  Data
      * @param vh ViewHolder
      */
-    private void touchModeChildKernel(T t, BaseEditViewHolder vh) {
-        CheckBox checkBox = vh.getCheckBox();
+    private void touchModeChildKernel(T t, K vh) {
+        CheckBox checkBox = getCheckBox(vh);
         checkBox.setClickable(true);
         checkBox.setChecked(t.isSelected());
         if (curMode == EDIT_MODE) {
@@ -265,52 +260,9 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     }
 
     /**
-     * 数据绑定
-     *
-     * @param item Item
-     * @param vh   ViewHolder
-     */
-    protected abstract void convert(T item, BaseEditViewHolder vh);
-
-    /**
-     * 创建ViewHolder
-     *
-     * @param itemView itemView
-     * @return ViewHolder
-     */
-    protected abstract BaseEditViewHolder createViewHolder(View itemView);
-
-    /**
-     * 创建空数据ViewHolder
-     *
-     * @param itemView itemView
-     * @return ViewHolder
-     */
-    protected abstract BaseEditViewHolder createEmptyViewHolder(View itemView);
-
-    /**
-     * 获取点击模式
-     *
-     * @return 点击模式，有以下值可选
-     * {@link EditAdapter#TOUCH_MODE_ROOT}
-     * {@link EditAdapter#TOUCH_MODE_CHILD}
-     */
-    protected abstract int getTouchMode();
-
-    @Override
-    public int getItemViewType(int position) {
-        if (null == list || 0 == list.size()) {
-            return EMPTY_DATA;
-        }
-        return super.getItemViewType(position);
-    }
-
-    /**
      * 变更显示模式
      *
      * @param mode 模式，有以下值可选
-     *             {@link EditAdapter#SHOW_MODE} 显示模式
-     *             {@link EditAdapter#EDIT_MODE} 编辑模式
      */
     public void changeMode(int mode) {
         this.curMode = mode;
@@ -321,7 +273,7 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     /**
      * 恢复所有已选择Item为未选择状态
      */
-    public void restoreUnSelected() {
+    private void restoreUnSelected() {
         if (null != selectedList) {
             for (ISelected selected : selectedList) {
                 if (selected.isSelected()) {
@@ -336,9 +288,9 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
      * 选择全部Item
      */
     public void selectedAllItem() {
-        if (null != list && null != selectedList) {
-            for (int i = 0; i < list.size(); i++) {
-                T t = list.get(i);
+        if (null != mData && null != selectedList) {
+            for (int i = 0; i < mData.size(); i++) {
+                T t = mData.get(i);
                 appendItemForSelectedList(t);
                 notifyItemChanged(i);
             }
@@ -350,9 +302,9 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
      * 取消选择全部Item
      */
     public void unSelectedAllItem() {
-        if (null != list && null != selectedList) {
-            for (int i = 0; i < list.size(); i++) {
-                T t = list.get(i);
+        if (null != mData && null != selectedList) {
+            for (int i = 0; i < mData.size(); i++) {
+                T t = mData.get(i);
                 removeItemForSelectedList(t);
                 notifyItemChanged(i);
             }
@@ -361,15 +313,33 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
     }
 
     /**
+     * 获取要删除的Item ID
+     *
+     * @return Select item
+     */
+    public String getRemoveSelectItem() {
+        return null;
+    }
+
+    /**
+     * 获取已选择的Item
+     *
+     * @return List<ISelected>
+     */
+    public List<ISelected> getSelectedList() {
+        return selectedList;
+    }
+
+    /**
      * 删除选中Item
      */
     public void removeSelectedItem() {
-        if (null != list && null != selectedList) {
+        if (null != mData && null != selectedList) {
             //循环内删除元素需要倒序删除
-            for (int i = list.size() - 1; i >= 0; i--) {
-                T t = list.get(i);
+            for (int i = mData.size() - 1; i >= 0; i--) {
+                T t = mData.get(i);
                 if (selectedList.contains(t)) {
-                    list.remove(i);
+                    mData.remove(i);
                     selectedList.remove(t);
                     removeItem(i);
                 }
@@ -383,7 +353,7 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
      *
      * @return 已选择Item的数量
      */
-    private int getSelectedItemCount() {
+    public int getSelectedItemCount() {
         if (null != selectedList) {
             return selectedList.size();
         }
@@ -406,7 +376,7 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
      * @return isSelectedAllItem
      */
     public boolean isSelectedAllItem() {
-        return getSelectedItemCount() == list.size();
+        return getSelectedItemCount() == mData.size();
     }
 
     /**
@@ -418,12 +388,41 @@ public abstract class EditAdapter<T extends ISelected> extends RecyclerView.Adap
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (null == list || 0 == list.size()) {
-            return 1;
+    /**
+     * 加载更多添加数据
+     *
+     * @param list          List
+     * @param startPosition 刷新开始位置
+     * @param itemCount     刷新个数
+     */
+    public void appendList(List<T> list, int startPosition, int itemCount) {
+        if (null != list) {
+            mData.addAll(list);
+            notifyItemRangeChanged(startPosition, itemCount);
         }
-        return list.size();
+    }
+
+    /**
+     * 更新列表
+     *
+     * @param list List
+     */
+    public void updateList(List<T> list) {
+        mData.clear();
+        if (null != list) {
+            mData.addAll(list);
+        }
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 清理所有数据
+     */
+    public void clearAllValues() {
+        if (!ListUtils.isEmpty(mData)) {
+            mData.clear();
+            notifyDataSetChanged();
+        }
     }
 
 }

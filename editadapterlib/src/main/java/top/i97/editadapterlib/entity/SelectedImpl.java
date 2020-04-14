@@ -12,7 +12,7 @@ import top.i97.editadapterlib.inter.ISelected;
  * @author Plain
  * @date 2019/12/4 6:34 下午
  */
-public class SelectedBean implements ISelected {
+public class SelectedImpl implements ISelected {
 
     private boolean isSelected;
 

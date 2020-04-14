@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
- * 空视图ViewHolder
+ * 空视图ViewHolder（过时⚠️）
  *
  * <p>
  * 空实现，承载View
@@ -13,6 +13,7 @@ import android.view.View;
  * @author Plain
  * @date 2019/12/5 2:13 下午
  */
+@Deprecated
 public class EmptyViewHolder extends BaseEditViewHolder {
 
     public EmptyViewHolder(@NonNull View itemView) {

@@ -1,6 +1,6 @@
 package top.i97.editadapter;
 
-import top.i97.editadapterlib.entity.SelectedBean;
+import top.i97.editadapterlib.entity.SelectedImpl;
 
 /**
  * 演示数据Bean
@@ -8,7 +8,7 @@ import top.i97.editadapterlib.entity.SelectedBean;
  * @author Plain
  * @date 2019/12/4 7:06 下午
  */
-public class MyDataBean extends SelectedBean {
+public class MyDataBean extends SelectedImpl {
 
     private String title;
     private String content;

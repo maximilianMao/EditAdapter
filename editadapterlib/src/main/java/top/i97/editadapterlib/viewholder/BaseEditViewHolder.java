@@ -7,11 +7,12 @@ import android.widget.CheckBox;
 import top.i97.editadapterlib.inter.IEditView;
 
 /**
- * 基础编辑模式ViewHolder
+ * 基础编辑模式ViewHolder（过时⚠️）
  *
  * @author Plain
  * @date 2019/12/5 2:09 下午
  */
+@Deprecated
 public class BaseEditViewHolder extends RecyclerView.ViewHolder implements IEditView {
 
     public BaseEditViewHolder(@NonNull View itemView) {

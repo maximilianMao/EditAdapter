@@ -4,11 +4,12 @@ import android.view.View;
 import android.widget.CheckBox;
 
 /**
- * 编辑模式View接口
+ * 编辑模式View接口（过时⚠️）
  *
  * @author Plain
  * @date 2019/12/5 2:11 下午
  */
+@Deprecated
 public interface IEditView {
 
     /**

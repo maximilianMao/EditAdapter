@@ -1,4 +1,4 @@
-package top.i97.editadapter;
+package top.i97.editadapter.adapter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -6,6 +6,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import top.i97.editadapter.MyDataBean;
+import top.i97.editadapter.R;
 import top.i97.editadapterlib.adapter.EditAdapter;
 import top.i97.editadapterlib.viewholder.BaseEditViewHolder;
 import top.i97.editadapterlib.viewholder.EmptyViewHolder;
@@ -13,11 +15,12 @@ import top.i97.editadapterlib.viewholder.EmptyViewHolder;
 import java.util.List;
 
 /**
- * 演示适配器
+ * 演示适配器（过时⚠️）
  *
  * @author Plain
  * @date 2019/12/4 7:05 下午
  */
+@Deprecated
 public class MyEditAdapter extends EditAdapter<MyDataBean> {
 
     private List<MyDataBean> list;

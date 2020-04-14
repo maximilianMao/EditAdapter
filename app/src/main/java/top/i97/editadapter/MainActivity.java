@@ -1,6 +1,5 @@
 package top.i97.editadapter;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +13,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import top.i97.editadapter.adapter.MyEditAdapter;
+import top.i97.editadapter.adapter.TestEditAdapter;
+import top.i97.editadapter.entity.TestBean;
 import top.i97.editadapterlib.adapter.EditAdapter;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
 
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btnDelete)
     Button btnDelete;
 
-    private List<MyDataBean> dataBeanList = new ArrayList<>();
-    private MyEditAdapter myEditAdapter;
+    private List<TestBean> dataBeanList = new ArrayList<>();
+    private TestEditAdapter myEditAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         for (int i = 0; i <= 10; i++) {
-            dataBeanList.add(new MyDataBean("标题" + i, "这是一条内容: " + i));
+            dataBeanList.add(new TestBean("标题" + i));
         }
 
-        myEditAdapter = new MyEditAdapter(dataBeanList);
+        myEditAdapter = new TestEditAdapter(dataBeanList);
         myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
             @Override
             public void onSelectedItemCount(int count) {
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<MyDataBean> getList() {
-        List<MyDataBean> myDataBeans = new ArrayList<>();
+    private List<TestBean> getList() {
+        List<TestBean> myDataBeans = new ArrayList<>();
         for (int i = 1; i <= Math.random() * 20; i++) {
-            myDataBeans.add(new MyDataBean("标题" + i, "这是一条内容: " + i));
+            myDataBeans.add(new TestBean("标题" + i));
         }
         return myDataBeans;
     }

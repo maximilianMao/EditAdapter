@@ -28,6 +28,8 @@ allprojects {
 ```
 //TAG替换为上方的最新版本号
 dependencies {
+    // 新版基于此库，必须引入
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
     implementation 'com.github.plain-dev:EditAdapter:Tag'
 }
 ```
@@ -52,84 +54,54 @@ public class MyDataBean extends SelectedBean {
 }
 ```
 
-2. 创建一个适配器，继承自`EditAdapter<T extends ISelected>`
+2. 创建一个适配器，继承自`BaseQuickEditModeAdapter<T extends ISelected>` ~~创建一个适配器，继承自`EditAdapter<T extends ISelected>`~~
 
 ```java
-public class MyEditAdapter extends EditAdapter<MyDataBean> {
+public class TestEditAdapter extends BaseQuickEditModeAdapter<TestBean, BaseViewHolder> {
     
   	......
       
 }
 ```
 
-3. 在构造方法中指定数据和布局
+3. 在构造方法中设置一些数据和属性
 
 ```java
-public MyEditAdapter(List<MyDataBean> list) {
-    super(list, R.layout.item_edit,R.layout.item_empty);
-}
-```
+public class TestEditAdapter extends BaseQuickEditModeAdapter<TestBean, BaseViewHolder> {
 
-4. 创建数据视图和空数据视图
+    // 指定布局和数据
+    public TestEditAdapter(@Nullable List<TestBean> data) {
+        super(R.layout.item_test_edit, data);
+    }
 
-```java
-@Override
-protected BaseEditViewHolder createViewHolder(View itemView) {
-    return new MyViewHolder(itemView);
-}
+    // 指定CheckBox
+    @Override
+    public CheckBox getCheckBox(BaseViewHolder helper) {
+        return helper.getView(R.id.checkBox);
+    }
 
-@Override
-protected BaseEditViewHolder createEmptyViewHolder(View itemView) {
-    return new EmptyViewHolder(itemView);
-}
-```
-
-5. 指定触摸模式
-
-```java
-@Override
-protected int getTouchMode() {
-    //指定触摸选择模式
-    return EditAdapter.TOUCH_MODE_ROOT;
-}
-```
-
-6. 数据绑定
-
-```java
-@Override
-protected void convert(MyDataBean item, BaseEditViewHolder vh) {
-    if (vh instanceof MyViewHolder){
-        MyViewHolder viewHolder = (MyViewHolder) vh;
-        viewHolder.tvTitle.setText(item.getTitle());
-        viewHolder.tvContent.setText(item.getContent());
+    // 指定HideView隐藏的区域，一般为CheckBox
+    @Override
+    public View getHideView(BaseViewHolder helper) {
+        return helper.getView(R.id.checkBox);
     }
 }
 ```
 
-7. 自定义ViewHolder，继承`BaseEditViewHolder`，并重写`getHideView`和`getCheckBox`方法，返回隐藏区域View和选择按钮🔘
+4. 数据绑定(和BaseQuickAdapter的使用方法一致)
 
 ```java
-public static class MyViewHolder extends BaseEditViewHolder {
-
-    public MyViewHolder(@NonNull View itemView) {
-        super(itemView);
-        ......
-    }
+public class TestEditAdapter extends BaseQuickEditModeAdapter<TestBean, BaseViewHolder> {
 
     @Override
-    public View getHideView() {
-        return checkBox;
+    protected void convertView(BaseViewHolder helper, TestBean item) {
+        helper.setText(R.id.tvTitle, item.getTitle());
     }
 
-    @Override
-    public CheckBox getCheckBox() {
-        return checkBox;
-    }
 }
 ```
 
-8. 在`Activity`或`Fragment`中更新UI
+5. 在`Activity`或`Fragment`中更新UI
 
   - 指定模式为`EDIT_MODE`（进入编辑模式）
 
@@ -167,7 +139,7 @@ public static class MyViewHolder extends BaseEditViewHolder {
     myEditAdapter.isSelectedAllItem()
     ```
 
-9. 注册事件监听器
+6. 注册事件监听器
 
 ```java
 myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
@@ -185,7 +157,7 @@ myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
 });
 ```
 
-10、如果使用下拉刷新控件，记得在进入编辑模式后，关闭下拉刷新（以(SmartRefreshLayout)[https://github.com/scwang90/SmartRefreshLayout]为例）
+7、如果使用下拉刷新控件，记得在进入编辑模式后，关闭下拉刷新（以(SmartRefreshLayout)[https://github.com/scwang90/SmartRefreshLayout]为例）
 
 进入编辑模式后
 
@@ -200,6 +172,12 @@ smartRefreshLayout.setEnableRefresh(true);
 ```
 
 ### 更新日志
+
+#### v1.0.4-stable
+
+本次更新内容如下
+
+重构代码，改为继承`BaseQuickAdapter`实现，功能更强大
 
 #### v1.0.3-alpha
 
