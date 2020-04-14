@@ -36,10 +36,10 @@ dependencies {
 
 ### 如何使用
 
-1. 在你的数据实体类中继承`SelectedBean`
+1. 在你的数据实体类中继承`SelectedImpl`
 
 ```java
-public class MyDataBean extends SelectedBean {
+public class MyDataBean extends SelectedImpl {
 
     private String title;
     private String content;
