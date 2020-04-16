@@ -141,7 +141,8 @@ public abstract class BaseQuickEditModeAdapter
             hideView.setVisibility(View.GONE);
             // 长按item进入编辑模式，进入的操作由外部实现
             vh.itemView.setOnLongClickListener(v -> {
-                if (null != editSelectedListener) {
+                // modify 2020-4-16: 长按item判断下当前所处模式，如果是编辑模式就不响应
+                if (getCurMode() != EDIT_MODE && null != editSelectedListener) {
                     editSelectedListener.onLongClickEnterEditMode();
                     appendItemForSelectedList(t);
                     callBackSelectedCount();

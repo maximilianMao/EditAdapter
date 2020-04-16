@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
     public void deleteSelectedItem() {
         if (0 == myEditAdapter.getSelectedItemCount()) {
             Toast.makeText(this, "请先选择一项!!!", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         // 获取删除所需参数
