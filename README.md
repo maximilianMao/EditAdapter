@@ -173,7 +173,7 @@ smartRefreshLayout.setEnableRefresh(true);
 
 ### 其它
 
-<details open>
+<details close>
 
 <summary>
 更新日志
