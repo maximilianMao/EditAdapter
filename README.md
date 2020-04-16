@@ -106,13 +106,13 @@ public class TestEditAdapter extends BaseQuickEditModeAdapter<TestBean, BaseView
   - 指定模式为`EDIT_MODE`（进入编辑模式）
 
     ```java
-    myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
+    myEditAdapter.changeMode(BaseQuickEditModeAdapter.EDIT_MODE);
     ```
 
   - 指定模式为`SHOW_MODE`（退出编辑模式）
 
     ```java
-    myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
+    myEditAdapter.changeMode(BaseQuickEditModeAdapter.SHOW_MODE);
     ```
 
   - 全选所有项
@@ -175,7 +175,7 @@ myEditAdapter.setEditSelectedListener(new IEditSelectedListener() {
   	//回调长按进入编辑模式
     @Override
     public void onLongClickEnterEditMode() {
-        myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
+        myEditAdapter.changeMode(BaseQuickEditModeAdapter.EDIT_MODE);
     }
 });
 ```
