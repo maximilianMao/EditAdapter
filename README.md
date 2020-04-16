@@ -8,7 +8,7 @@
 
 ### 演示
 
-<img src='screenshot/demo.gif' width = '300' style="float:left"   />
+[👉查看演示](screenshot/demo.gif)
 
 ### 添加`EditAdapter`到你的项目
 
