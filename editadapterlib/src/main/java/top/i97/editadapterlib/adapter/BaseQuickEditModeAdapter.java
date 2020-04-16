@@ -1,5 +1,6 @@
 package top.i97.editadapterlib.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import top.i97.editadapterlib.inter.IEditKernelView;
@@ -25,6 +27,7 @@ import top.i97.editadapterlib.util.ListUtils;
  * blog: https://plain-dev.com
  * email: support@plain-dev.com
  */
+@SuppressWarnings("ALL")
 public abstract class BaseQuickEditModeAdapter
         <T extends ISelected, K extends BaseViewHolder>
         extends BaseQuickAdapter
@@ -313,7 +316,29 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     /**
-     * 获取要删除的Item ID
+     * 获取要删除的Item (外部实现)
+     *
+     * <p>
+     * 一般删除item都是需要传给接口id的，可以在适配器中重写此方法，来实现自己的逻辑
+     * 获取以选择的item集合可通过{@link BaseQuickEditModeAdapter#getSelectedList()}
+     * 获得，示例写法如下
+     * <code>
+     * public String getRemoveSelectItem() {
+     * List<ISelected> selectedList = getSelectedList();
+     * if (!ListUtils.isEmpty(selectedList)) {
+     * StringBuilder sb = new StringBuilder();
+     * for (ISelected iSelected : selectedList) {
+     * if (iSelected instanceof TestBean) {
+     * TestBean bean = (TestBean) iSelected;
+     * sb.append(bean.getId()).append(",");
+     * }
+     * }
+     * return sb.toString();
+     * }
+     * return null;
+     * }
+     * </code>
+     * </p>
      *
      * @return Select item
      */
@@ -389,40 +414,27 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     /**
-     * 加载更多添加数据
+     * 追加列表数据
      *
-     * @param list          List
-     * @param startPosition 刷新开始位置
-     * @param itemCount     刷新个数
+     * @param data New data
      */
-    public void appendList(List<T> list, int startPosition, int itemCount) {
-        if (null != list) {
-            mData.addAll(list);
-            notifyItemRangeChanged(startPosition, itemCount);
+    public void addData(@NonNull List<T> newData) {
+        if (null != newData) {
+            super.addData(newData);
         }
     }
 
     /**
-     * 更新列表
+     * 更新列表数据
      *
      * @param list List
      */
-    public void updateList(List<T> list) {
+    public void updateData(List<T> list) {
         mData.clear();
         if (null != list) {
             mData.addAll(list);
         }
         notifyDataSetChanged();
-    }
-
-    /**
-     * 清理所有数据
-     */
-    public void clearAllValues() {
-        if (!ListUtils.isEmpty(mData)) {
-            mData.clear();
-            notifyDataSetChanged();
-        }
     }
 
 }

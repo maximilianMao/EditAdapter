@@ -138,6 +138,29 @@ public class TestEditAdapter extends BaseQuickEditModeAdapter<TestBean, BaseView
     ```java
     myEditAdapter.isSelectedAllItem()
     ```
+    
+  - 获取要删除的Item (外部实现)
+  
+    比如删除接口要求，参数为item的`id`用`,`号隔开的字符串，可以像下面这么实现，在适配器中重写`getRemoveSelectItem`方法
+    
+    ```java
+    @Override
+    public String getRemoveSelectItem() {
+        List<ISelected> selectedList = getSelectedList();
+        if (!ListUtils.isEmpty(selectedList)) {
+            StringBuilder sb = new StringBuilder();
+            for (ISelected iSelected : selectedList) {
+                if (iSelected instanceof TestBean) {
+                    sb.append((TestBean) iSelected.getId()).append(",");
+                }
+            }
+            return sb.toString();
+        }
+        return null;
+    }
+    ```
+    
+    可以根据接口的要求来实现不同的
 
 6. 注册事件监听器
 
