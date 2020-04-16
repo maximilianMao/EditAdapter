@@ -10,13 +10,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import top.i97.editadapterlib.inter.IEditKernelView;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
 import top.i97.editadapterlib.inter.ISelected;
-import top.i97.editadapterlib.util.ListUtils;
 
 /**
  * name: BaseQuickEditModeAdapter
