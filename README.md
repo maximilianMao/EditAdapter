@@ -171,7 +171,13 @@ smartRefreshLayout.setEnableRefresh(false);
 smartRefreshLayout.setEnableRefresh(true);
 ```
 
-### 更新日志
+### 其它
+
+<details open>
+
+<summary>
+更新日志
+</summary>
 
 #### v1.0.4-stable
 
@@ -205,8 +211,8 @@ smartRefreshLayout.setEnableRefresh(true);
 - ~~首个预览版~~
 - 有些问题，请使用新版
 
-### 其它
+</details>
 
-1. 有问题欢迎提交`issues`
+有问题欢迎提交`issues`
 
-2. 状态图标来源[iconfont](https://www.iconfont.cn/)，侵删
+状态图标来源[iconfont](https://www.iconfont.cn/)，侵删
