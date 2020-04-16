@@ -26,11 +26,11 @@ allprojects {
 2. 添加依赖 [![](https://jitpack.io/v/plain-dev/EditAdapter.svg)](https://jitpack.io/#plain-dev/EditAdapter)
 
 ```
-//TAG替换为上方的最新版本号
 dependencies {
     // 新版基于此库，必须引入
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
-    implementation 'com.github.plain-dev:EditAdapter:Tag'
+    // TAG替换为上方的最新版本号
+    implementation 'com.github.plain-dev:EditAdapter:TAG'
 }
 ```
 
