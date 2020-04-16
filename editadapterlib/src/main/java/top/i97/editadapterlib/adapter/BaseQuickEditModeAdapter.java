@@ -292,7 +292,7 @@ public abstract class BaseQuickEditModeAdapter
      * 选择全部Item
      */
     public void selectedAllItem() {
-        if (null != mData && null != selectedList) {
+        if (null != mData && null != selectedList && checkEditMode()) {
             for (int i = 0; i < mData.size(); i++) {
                 T t = mData.get(i);
                 appendItemForSelectedList(t);
@@ -306,7 +306,7 @@ public abstract class BaseQuickEditModeAdapter
      * 取消选择全部Item
      */
     public void unSelectedAllItem() {
-        if (null != mData && null != selectedList) {
+        if (null != mData && null != selectedList && checkEditMode()) {
             for (int i = 0; i < mData.size(); i++) {
                 T t = mData.get(i);
                 removeItemForSelectedList(t);
@@ -314,6 +314,15 @@ public abstract class BaseQuickEditModeAdapter
             }
             callBackSelectedCount();
         }
+    }
+
+    /**
+     * 检查是否处于编辑模式
+     *
+     * @return
+     */
+    private boolean checkEditMode() {
+        return getCurMode() == EDIT_MODE;
     }
 
     /**
