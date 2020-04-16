@@ -323,14 +323,13 @@ public abstract class BaseQuickEditModeAdapter
      * 获取以选择的item集合可通过{@link BaseQuickEditModeAdapter#getSelectedList()}
      * 获得，示例写法如下
      * <code>
-     * public String getRemoveSelectItem() {
+     * public String getDeleteParams() {
      * List<ISelected> selectedList = getSelectedList();
      * if (!ListUtils.isEmpty(selectedList)) {
      * StringBuilder sb = new StringBuilder();
      * for (ISelected iSelected : selectedList) {
      * if (iSelected instanceof TestBean) {
-     * TestBean bean = (TestBean) iSelected;
-     * sb.append(bean.getId()).append(",");
+     * sb.append(((TestBean) iSelected).getId()).append(",");
      * }
      * }
      * return sb.toString();
@@ -342,7 +341,7 @@ public abstract class BaseQuickEditModeAdapter
      *
      * @return Select item
      */
-    public String getRemoveSelectItem() {
+    public String getDeleteParams() {
         return null;
     }
 

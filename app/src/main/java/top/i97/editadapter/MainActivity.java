@@ -1,5 +1,6 @@
 package top.i97.editadapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,14 +10,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 
 import top.i97.editadapter.adapter.MyEditAdapter;
 import top.i97.editadapter.adapter.TestEditAdapter;
 import top.i97.editadapter.entity.TestBean;
+import top.i97.editadapterlib.adapter.BaseQuickEditModeAdapter;
 import top.i97.editadapterlib.adapter.EditAdapter;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
 
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         for (int i = 0; i <= 10; i++) {
-            dataBeanList.add(new TestBean("标题" + i));
+            dataBeanList.add(new TestBean("100" + i, "标题" + i));
         }
 
         myEditAdapter = new TestEditAdapter(dataBeanList);
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onLongClickEnterEditMode() {
+                // 长按时进入编辑模式
                 enterEditMode();
             }
         });
@@ -76,20 +84,31 @@ public class MainActivity extends AppCompatActivity {
         rvList.addItemDecoration(new LineItemDecoration(this, LineItemDecoration.VERTICAL_LIST));
         rvList.setAdapter(myEditAdapter);
 
-        //模拟下拉刷新
+        smartRefreshLayout.setEnableLoadMore(true);
         smartRefreshLayout.setEnableOverScrollBounce(true);
         smartRefreshLayout.setEnableOverScrollDrag(true);
+        // 模拟下拉刷新
         smartRefreshLayout.setOnRefreshListener(refreshLayout -> rvList.postDelayed(() -> {
-            myEditAdapter.updateList(getList());
+            myEditAdapter.updateData(getList());
             smartRefreshLayout.finishRefresh(true);
+        }, 1000));
+        // 模拟上拉加载更多
+        smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> rvList.postDelayed(() -> {
+            myEditAdapter.addData(getList());
+            smartRefreshLayout.finishLoadMore(true);
         }, 1000));
 
     }
 
+    /**
+     * 随机获取数据
+     *
+     * @return List<TestBean>
+     */
     private List<TestBean> getList() {
         List<TestBean> myDataBeans = new ArrayList<>();
         for (int i = 1; i <= Math.random() * 20; i++) {
-            myDataBeans.add(new TestBean("标题" + i));
+            myDataBeans.add(new TestBean("100" + i, "标题" + i));
         }
         return myDataBeans;
     }
@@ -103,25 +122,37 @@ public class MainActivity extends AppCompatActivity {
         int curShowMode = myEditAdapter.getCurMode();
         Log.d(TAG, "当前模式: " + curShowMode);
         switch (curShowMode) {
-            case EditAdapter.SHOW_MODE:
+            case BaseQuickEditModeAdapter.SHOW_MODE:
                 enterEditMode();
                 break;
-            case EditAdapter.EDIT_MODE:
+            case BaseQuickEditModeAdapter.EDIT_MODE:
                 enterShowMode();
                 break;
         }
     }
 
+    /**
+     * 进入展示模式
+     */
     private void enterShowMode() {
+        // 退出编辑模式后，重新启用下拉刷新和上拉加载更多
         smartRefreshLayout.setEnableRefresh(true);
-        myEditAdapter.changeMode(EditAdapter.SHOW_MODE);
+        smartRefreshLayout.setEnableLoadMore(true);
+
+        myEditAdapter.changeMode(BaseQuickEditModeAdapter.SHOW_MODE);
         edit.setText("编辑");
         rlEditView.setVisibility(View.GONE);
     }
 
+    /**
+     * 进入编辑模式
+     */
     private void enterEditMode() {
+        // 进入编辑模式后，临时关闭下拉刷新和上拉加载更多
         smartRefreshLayout.setEnableRefresh(false);
-        myEditAdapter.changeMode(EditAdapter.EDIT_MODE);
+        smartRefreshLayout.setEnableLoadMore(false);
+
+        myEditAdapter.changeMode(BaseQuickEditModeAdapter.EDIT_MODE);
         edit.setText("完成");
         rlEditView.setVisibility(View.VISIBLE);
     }
@@ -132,8 +163,10 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btnSelectAll)
     public void selectedAllItem() {
         if (myEditAdapter.isSelectedAllItem()) {
+            // 反选
             myEditAdapter.unSelectedAllItem();
         } else {
+            // 选择全部
             myEditAdapter.selectedAllItem();
         }
 
@@ -144,6 +177,15 @@ public class MainActivity extends AppCompatActivity {
      */
     @OnClick(R.id.btnDelete)
     public void deleteSelectedItem() {
+        if (0 == myEditAdapter.getSelectedItemCount()) {
+            Toast.makeText(this, "请先选择一项!!!", Toast.LENGTH_SHORT).show();
+        }
+
+        // 获取删除所需参数
+        String deleteParams = myEditAdapter.getDeleteParams();
+        Toast.makeText(this, "删除所需参数为: " + deleteParams, Toast.LENGTH_LONG).show();
+
+        // 本地删除
         myEditAdapter.removeSelectedItem();
     }
 
