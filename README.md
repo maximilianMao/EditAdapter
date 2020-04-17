@@ -238,7 +238,7 @@ smartRefreshLayout.setEnableRefresh(true);
 
 有问题欢迎提交`issues`
 
-状态图标来源[iconfont](https://www.iconfont.cn/)，侵删
+图标来源[iconfont](https://www.iconfont.cn/)，侵删
 
 感谢[BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)，本项目继承自该库，并遵循[LICENSE](https://github.com/CymChad/BaseRecyclerViewAdapterHelper/blob/master/LICENSE)
 

@@ -140,7 +140,7 @@ public abstract class BaseQuickEditModeAdapter
             // 长按item进入编辑模式，进入的操作由外部实现
             vh.itemView.setOnLongClickListener(v -> {
                 // modify 2020-4-16: 长按item判断下当前所处模式，如果是编辑模式就不响应
-                if (getCurMode() != EDIT_MODE && null != editSelectedListener) {
+                if (!checkEditMode() && null != editSelectedListener) {
                     editSelectedListener.onLongClickEnterEditMode();
                     appendItemForSelectedList(t);
                     callBackSelectedCount();
@@ -315,9 +315,9 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     /**
-     * 检查是否处于编辑模式
+     * 检查当前是否处于{@link BaseQuickEditModeAdapter#EDIT_MODE}编辑模式
      *
-     * @return
+     * @return true: 编辑模式, false: 显示模式
      */
     private boolean checkEditMode() {
         return getCurMode() == EDIT_MODE;
