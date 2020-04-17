@@ -366,8 +366,8 @@ public abstract class BaseQuickEditModeAdapter
      * 删除选中Item
      */
     public void removeSelectedItem() {
-        if (null != mData && null != selectedList) {
-            //循环内删除元素需要倒序删除
+        if (null != mData && null != selectedList && checkEditMode()) {
+            // 循环内删除元素需要倒序删除
             for (int i = mData.size() - 1; i >= 0; i--) {
                 T t = mData.get(i);
                 if (selectedList.contains(t)) {
@@ -386,7 +386,7 @@ public abstract class BaseQuickEditModeAdapter
      * @return 已选择Item的数量
      */
     public int getSelectedItemCount() {
-        if (null != selectedList) {
+        if (null != selectedList && checkEditMode()) {
             return selectedList.size();
         }
         return 0;
