@@ -1,6 +1,6 @@
 package top.i97.editadapterlib.viewholder;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 /**

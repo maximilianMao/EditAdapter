@@ -26,8 +26,7 @@ package top.i97.editadapterlib.inter;
 
 import android.view.View;
 import android.widget.CheckBox;
-
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 /**
  * name: IEditKernelView

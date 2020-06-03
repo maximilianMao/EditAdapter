@@ -1,10 +1,9 @@
 package top.i97.editadapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,18 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.ButterKnife;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 
-import top.i97.editadapter.adapter.MyEditAdapter;
 import top.i97.editadapter.adapter.TestEditAdapter;
 import top.i97.editadapter.entity.TestBean;
 import top.i97.editadapterlib.adapter.BaseQuickEditModeAdapter;
-import top.i97.editadapterlib.adapter.EditAdapter;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
 
 import java.util.ArrayList;

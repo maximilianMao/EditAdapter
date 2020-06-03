@@ -24,21 +24,20 @@ SOFTWARE.
 
 package top.i97.editadapterlib.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import top.i97.editadapterlib.inter.IEditKernelView;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
 import top.i97.editadapterlib.inter.ISelected;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * name: BaseQuickEditModeAdapter
@@ -119,7 +118,7 @@ public abstract class BaseQuickEditModeAdapter
      * 已选择Item列表
      *
      * <p>
-     * 用来存放以选择的Item{@link BaseQuickAdapter#mData}
+     * 用来存放以选择的Item{@link BaseQuickAdapter#data}
      * </p>
      */
     private List<ISelected> selectedList = new ArrayList<>();
@@ -164,7 +163,7 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     @Override
-    public void setOnItemChildClickListener(BaseQuickAdapter.OnItemChildClickListener listener) {
+    public void setOnItemChildClickListener(OnItemChildClickListener listener) {
         // 只有在展示模式才相应item点击事件
         if (getCurMode() == SHOW_MODE) {
             super.setOnItemChildClickListener(listener);
@@ -183,7 +182,7 @@ public abstract class BaseQuickEditModeAdapter
      * 填充Item的内容
      *
      * @param helper {@link BaseViewHolder}
-     * @param item   {@link BaseQuickAdapter#mData}
+     * @param item   {@link BaseQuickAdapter#data}
      */
     protected abstract void convertView(K helper, T item);
 
@@ -211,7 +210,7 @@ public abstract class BaseQuickEditModeAdapter
      * 编辑模式核心
      *
      * @param vh {@link BaseViewHolder}
-     * @param t  {@link BaseQuickAdapter#mData}
+     * @param t  {@link BaseQuickAdapter#data}
      */
     private void editKernel(K vh, T t) {
         View hideView = getHideView(vh);
@@ -256,7 +255,7 @@ public abstract class BaseQuickEditModeAdapter
      * 根据当前{@link BaseQuickEditModeAdapter#getTouchMode()}点击模式，调用不用的方案
      *
      * @param vh {@link BaseViewHolder}
-     * @param t  {@link BaseQuickAdapter#mData}
+     * @param t  {@link BaseQuickAdapter#data}
      */
     private void touchModeKernel(K vh, T t) {
         if (getTouchMode() == TOUCH_MODE_ROOT) {
@@ -264,7 +263,8 @@ public abstract class BaseQuickEditModeAdapter
         } else if (getTouchMode() == TOUCH_MODE_CHILD) {
             touchModeChildKernel(vh, t);
         } else {
-            Log.e(TAG, "未指定点击模式!!!");
+            throw new IllegalArgumentException("未指定触摸模式，重写 `getTouchMode()` 进行指定，" +
+                    "可选 `TOUCH_MODE_ROOT` 和 `TOUCH_MODE_CHILD` !");
         }
     }
 
@@ -272,7 +272,7 @@ public abstract class BaseQuickEditModeAdapter
      * 点击模式{@link BaseQuickEditModeAdapter#TOUCH_MODE_ROOT}核心
      *
      * @param vh {@link BaseViewHolder}
-     * @param t  {@link BaseQuickAdapter#mData}
+     * @param t  {@link BaseQuickAdapter#data}
      */
     private void touchModeRootKernel(K vh, T t) {
         View itemView = vh.itemView;
@@ -294,7 +294,7 @@ public abstract class BaseQuickEditModeAdapter
      * 点击模式{@link BaseQuickEditModeAdapter#TOUCH_MODE_CHILD}核心
      *
      * @param vh {@link BaseViewHolder}
-     * @param t  {@link BaseQuickAdapter#mData}
+     * @param t  {@link BaseQuickAdapter#data}
      */
     private void touchModeChildKernel(K vh, T t) {
         CheckBox checkBox = getCheckBox(vh);
@@ -315,7 +315,7 @@ public abstract class BaseQuickEditModeAdapter
     /**
      * 选择状态设置
      *
-     * @param t          {@link BaseQuickAdapter#mData}
+     * @param t          {@link BaseQuickAdapter#data}
      * @param isSelected 选择状态, true: 选中, false: 未选中
      */
     private void processSelected(T t, boolean isSelected) {
@@ -329,7 +329,7 @@ public abstract class BaseQuickEditModeAdapter
     /**
      * 添加Item到已选择列表{@link BaseQuickEditModeAdapter#selectedList}
      *
-     * @param t {@link BaseQuickAdapter#mData}
+     * @param t {@link BaseQuickAdapter#data}
      */
     private void appendItemForSelectedList(T t) {
         t.setSelected(true);
@@ -341,7 +341,7 @@ public abstract class BaseQuickEditModeAdapter
     /**
      * 删除Item从已选择列表{@link BaseQuickEditModeAdapter#selectedList}
      *
-     * @param t {@link BaseQuickAdapter#mData}
+     * @param t {@link BaseQuickAdapter#data}
      */
     private void removeItemForSelectedList(T t) {
         t.setSelected(false);
@@ -378,9 +378,9 @@ public abstract class BaseQuickEditModeAdapter
      * 选择全部Item
      */
     public void selectedAllItem() {
-        if (null != mData && null != selectedList && checkEditMode()) {
-            for (int i = 0; i < mData.size(); i++) {
-                T t = mData.get(i);
+        if (null != getData() && null != selectedList && checkEditMode()) {
+            for (int i = 0; i < getData().size(); i++) {
+                T t = getData().get(i);
                 appendItemForSelectedList(t);
                 notifyItemChanged(i);
             }
@@ -392,9 +392,9 @@ public abstract class BaseQuickEditModeAdapter
      * 取消选择全部Item
      */
     public void unSelectedAllItem() {
-        if (null != mData && null != selectedList && checkEditMode()) {
-            for (int i = 0; i < mData.size(); i++) {
-                T t = mData.get(i);
+        if (null != getData() && null != selectedList && checkEditMode()) {
+            for (int i = 0; i < getData().size(); i++) {
+                T t = getData().get(i);
                 removeItemForSelectedList(t);
                 notifyItemChanged(i);
             }
@@ -457,12 +457,12 @@ public abstract class BaseQuickEditModeAdapter
      * 删除选中Item{@link BaseQuickEditModeAdapter#selectedList}
      */
     public void removeSelectedItem() {
-        if (null != mData && null != selectedList && checkEditMode()) {
+        if (null != getData() && null != selectedList && checkEditMode()) {
             // 循环内删除元素需要倒序删除
-            for (int i = mData.size() - 1; i >= 0; i--) {
-                T t = mData.get(i);
+            for (int i = getData().size() - 1; i >= 0; i--) {
+                T t = getData().get(i);
                 if (selectedList.contains(t)) {
-                    mData.remove(i);
+                    getData().remove(i);
                     selectedList.remove(t);
                     removeItem(i);
                 }
@@ -484,7 +484,7 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     /**
-     * 删除Item{@link BaseQuickAdapter#mData}
+     * 删除Item{@link BaseQuickAdapter#data}
      *
      * @param pos Item position
      */
@@ -499,7 +499,7 @@ public abstract class BaseQuickEditModeAdapter
      * @return isSelectedAllItem true: 选择全部, false: 未选中全部
      */
     public boolean isSelectedAllItem() {
-        return getSelectedItemCount() == mData.size();
+        return getSelectedItemCount() == getData().size();
     }
 
     /**
@@ -512,7 +512,7 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     /**
-     * 追加列表{@link BaseQuickAdapter#mData}数据
+     * 追加列表{@link BaseQuickAdapter#data}数据
      *
      * @param data New data
      */
@@ -523,14 +523,14 @@ public abstract class BaseQuickEditModeAdapter
     }
 
     /**
-     * 更新列表{@link BaseQuickAdapter#mData}数据
+     * 更新列表{@link BaseQuickAdapter#data}数据
      *
      * @param list List
      */
     public void updateData(List<T> list) {
-        mData.clear();
+        getData().clear();
         if (null != list) {
-            mData.addAll(list);
+            getData().addAll(list);
         }
         notifyDataSetChanged();
     }

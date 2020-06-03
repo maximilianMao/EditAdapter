@@ -25,12 +25,24 @@ allprojects {
 
 2. 添加依赖 [![](https://jitpack.io/v/plain-dev/EditAdapter.svg)](https://jitpack.io/#plain-dev/EditAdapter)
 
+- Android X
+
 ```
 dependencies {
-    // 新版基于此库，必须引入
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    // 基于此库，必须引入
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     // TAG替换为上方的最新版本号
     implementation 'com.github.plain-dev:EditAdapter:TAG'
+}
+```
+
+- Android Support (1.0.5-stable)
+
+```
+dependencies {
+    // 基于此库，必须引入
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    implementation 'com.github.plain-dev:EditAdapter:1.0.5-stable'
 }
 ```
 

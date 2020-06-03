@@ -1,13 +1,12 @@
 package top.i97.editadapter.adapter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.chad.library.adapter.base.BaseViewHolder;
-
 import java.util.List;
 
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import top.i97.editadapter.R;
 import top.i97.editadapter.entity.TestBean;
 import top.i97.editadapterlib.adapter.BaseQuickEditModeAdapter;
