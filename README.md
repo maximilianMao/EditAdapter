@@ -214,6 +214,19 @@ smartRefreshLayout.setEnableRefresh(true);
 更新日志
 </summary>
 
+#### v1.0.6-stable
+
+本次更新内容如下
+
+- 迁移到Android X
+- 更新BaseRecyclerViewAdapterHelper版本到3.0.4
+
+#### v1.0.5-stable
+
+本次更新内容如下
+
+- fix bug 🐛
+
 #### v1.0.4-stable
 
 本次更新内容如下
