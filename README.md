@@ -214,6 +214,12 @@ smartRefreshLayout.setEnableRefresh(true);
 更新日志
 </summary>
 
+#### v1.0.7-stable
+
+本次更新内容如下
+
+- 修复从编辑模式(EDIT_MODE)切换到展示模式(SHOW_MODE)后设置的点击事件无效的问题
+
 #### v1.0.6-stable
 
 本次更新内容如下

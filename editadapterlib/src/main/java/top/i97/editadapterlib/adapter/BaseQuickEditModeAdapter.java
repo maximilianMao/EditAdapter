@@ -29,8 +29,10 @@ import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 
+import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import top.i97.editadapterlib.inter.IEditKernelView;
 import top.i97.editadapterlib.inter.IEditSelectedListener;
@@ -123,6 +125,11 @@ public abstract class BaseQuickEditModeAdapter
      */
     private List<ISelected> selectedList = new ArrayList<>();
 
+    /**
+     * 缓存 Old ItemClickListener
+     */
+    private OnItemClickListener oldItemClickListener;
+
     public BaseQuickEditModeAdapter(int layoutResId, @Nullable List<T> data) {
         super(layoutResId, data);
     }
@@ -160,14 +167,6 @@ public abstract class BaseQuickEditModeAdapter
      */
     public void setEditSelectedListener(IEditSelectedListener editSelectedListener) {
         this.editSelectedListener = editSelectedListener;
-    }
-
-    @Override
-    public void setOnItemChildClickListener(OnItemChildClickListener listener) {
-        // 只有在展示模式才相应item点击事件
-        if (getCurMode() == SHOW_MODE) {
-            super.setOnItemChildClickListener(listener);
-        }
     }
 
     @Override
@@ -223,6 +222,21 @@ public abstract class BaseQuickEditModeAdapter
             touchModeKernel(vh, t);
         } else {
             hideView.setVisibility(View.GONE);
+            // 将切换到编辑模式前的 `ItemClickListener`，复原
+            if (oldItemClickListener != null) {
+                vh.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = vh.getAdapterPosition();
+                        if (position == RecyclerView.NO_POSITION) {
+                            return;
+                        }
+                        position -= getHeaderLayoutCount();
+                        setOnItemClickListener(oldItemClickListener);
+                        setOnItemClick(v, position);
+                    }
+                });
+            }
             // 长按item进入编辑模式，进入的操作由外部实现
             vh.itemView.setOnLongClickListener(v -> {
                 // modify 2020-4-16: 长按item判断下当前所处模式，如果是编辑模式就不响应
@@ -282,6 +296,8 @@ public abstract class BaseQuickEditModeAdapter
         }
         checkBox.setClickable(false);
         checkBox.setChecked(t.isSelected());
+        // 缓存在 `SHOW_MODE` 时设置的 `OnItemClickListener`, 切换回去后进行还原
+        oldItemClickListener = getOnItemClickListener();
         itemView.setOnClickListener(v -> {
             boolean selected = !t.isSelected();
             checkBox.setChecked(selected);

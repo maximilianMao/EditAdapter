@@ -1,22 +1,22 @@
 package top.i97.editadapter;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
-import butterknife.OnClick;
 import butterknife.ButterKnife;
-
+import butterknife.OnClick;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-
 import top.i97.editadapter.adapter.TestEditAdapter;
 import top.i97.editadapter.entity.TestBean;
 import top.i97.editadapterlib.adapter.BaseQuickEditModeAdapter;
@@ -72,6 +72,20 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClickEnterEditMode() {
                 // 长按时进入编辑模式
                 enterEditMode();
+            }
+        });
+        myEditAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                Toast.makeText(MainActivity.this, "position: " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+        myEditAdapter.addChildClickViewIds(R.id.tvTitle);
+        myEditAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            // 判断一下当前模式
+            if (myEditAdapter.getCurMode() == BaseQuickEditModeAdapter.EDIT_MODE) return;
+            if (view.getId() == R.id.tvTitle) {
+                Toast.makeText(MainActivity.this, "title: " + dataBeanList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
         LinearLayoutManager manager = new LinearLayoutManager(this);
