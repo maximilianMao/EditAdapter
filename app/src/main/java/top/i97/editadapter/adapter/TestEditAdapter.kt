@@ -55,7 +55,6 @@ class TestEditAdapter(data: MutableList<MyDataBean>) : BaseQuickEditModeAdapter<
             val stringBuilder = StringBuilder()
             for (iSelected in it) {
                 if (iSelected is MyDataBean) {
-                    // 拼接 `id` 为删除所需参数
                     stringBuilder.append(iSelected.title).append(",")
                 }
             }
