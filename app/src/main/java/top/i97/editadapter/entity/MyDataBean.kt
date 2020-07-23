@@ -22,32 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-package top.i97.editadapterlib.entity;
+package top.i97.editadapter.entity
 
-import top.i97.editadapterlib.inter.ISelected;
+import top.i97.editadapterlib.entity.Selected
 
 /**
- * 条目选择实体
- *
- * <p>
- * 目标列表需继承此类
- * </p>
+ * 演示数据实体
  *
  * @author Plain
- * @date 2019/12/4 6:34 下午
  */
-public class SelectedImpl implements ISelected {
-
-    private boolean isSelected;
-
-    @Override
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    @Override
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-}
+class MyDataBean(var title: String, var content: String) : Selected()

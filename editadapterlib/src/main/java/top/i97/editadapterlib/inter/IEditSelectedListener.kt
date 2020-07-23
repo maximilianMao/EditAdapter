@@ -21,35 +21,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-
-package top.i97.editadapterlib.util;
-
-import java.util.List;
+package top.i97.editadapterlib.inter
 
 /**
- * name: ListUtils
- * desc: 集合工具类
- * date: 2020/4/14 4:31 PM
- * version: v1.0
- * author: Plain
- * blog: https://plain-dev.com
- * email: support@plain-dev.com
+ * 编辑模式 选择监听器
+ *
+ * @author Plain
  */
-public class ListUtils {
-
-    private ListUtils() {
-
-    }
+interface IEditSelectedListener {
 
     /**
-     * List是否为空
-     *
-     * @param list List
-     * @return true or false
+     * 回调当前选中的Item数量[count]
      */
-    public static boolean isEmpty(List list) {
-        return null == list || 0 == list.size();
-    }
+    fun onSelectedItemCount(count: Int)
 
+    /**
+     * 回调长按进入编辑模式
+     */
+    fun onLongClickEnterEditMode()
 
 }

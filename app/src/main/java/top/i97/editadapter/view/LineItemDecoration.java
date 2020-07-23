@@ -1,4 +1,4 @@
-package top.i97.editadapter;
+package top.i97.editadapter.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+import top.i97.editadapter.R;
 
 /**
  * RecyclerView分割线

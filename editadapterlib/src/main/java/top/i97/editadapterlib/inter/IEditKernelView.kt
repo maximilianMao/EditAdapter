@@ -21,27 +21,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
+package top.i97.editadapterlib.inter
 
-package top.i97.editadapterlib.inter;
+import android.view.View
+import android.widget.CheckBox
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
 /**
- * 编辑模式 选择监听器
+ * 编辑模式适配器需要实现该接口，用来获取CheckBox视图和隐藏区域
  *
  * @author Plain
- * @date 2019/12/4 6:44 下午
  */
-public interface IEditSelectedListener {
+interface IEditKernelView<K : BaseViewHolder> {
 
     /**
-     * 回调当前选中的Item数量
+     * 获取要隐藏的View
      *
-     * @param count Count
+     * @return View
      */
-    void onSelectedItemCount(int count);
+    fun getHideView(helper: K): View?
 
     /**
-     * 回调长按进入编辑模式
+     * 获取CheckBox
+     *
+     * @return CheckBox
      */
-    void onLongClickEnterEditMode();
+    fun getCheckBox(helper: K): CheckBox?
 
 }
