@@ -31,4 +31,4 @@ import top.i97.editadapterlib.entity.Selected
  *
  * @author Plain
  */
-class MyDataBean(var title: String, var content: String) : Selected()
+data class MyDataBean(var title: String, var content: String) : Selected()

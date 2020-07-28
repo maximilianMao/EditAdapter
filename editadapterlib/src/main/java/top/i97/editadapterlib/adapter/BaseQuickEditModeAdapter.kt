@@ -63,7 +63,7 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
 
     var editSelectedListener: IEditSelectedListener? = null
 
-    private val selectedList = mutableListOf<Selected>()
+    private val selectedList = mutableMapOf<Any, Selected>()
 
     private var externalCheckBox: CheckBox? = null
 
@@ -212,8 +212,9 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
      */
     private fun appendItemForSelectedList(t: T) {
         t.isSelected = true
-        if (!selectedList.contains(t)) {
-            selectedList.add(t)
+        val identityHashCode = System.identityHashCode(t)
+        if (!selectedList.contains(identityHashCode)) {
+            selectedList[identityHashCode] = t
         }
     }
 
@@ -221,8 +222,9 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
      * 删除Item从已选择列表[selectedList]
      */
     private fun removeItemForSelectedList(t: T) {
+        val identityHashCode = System.identityHashCode(t)
         t.isSelected = false
-        selectedList.remove(t)
+        selectedList.remove(identityHashCode)
     }
 
     /**
@@ -249,8 +251,8 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
     private fun restoreUnSelected() {
         if (selectedList.isNotEmpty()) {
             for (selected in selectedList) {
-                if (selected.isSelected) {
-                    selected.isSelected = false
+                if (selected.value.isSelected) {
+                    selected.value.isSelected = false
                 }
             }
             selectedList.clear()
@@ -293,9 +295,9 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
             // 循环内删除元素需要倒序删除
             for (i in data.indices.reversed()) {
                 val t = data[i]
-                if (selectedList.contains(t)) {
-                    data.removeAt(i)
-                    selectedList.remove(t)
+                val identityHashCode = System.identityHashCode(t)
+                if (selectedList.contains(identityHashCode)) {
+                    selectedList.remove(data.removeAt(i))
                     removeItem(i)
                 }
             }
@@ -335,7 +337,7 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
         if (null != editSelectedListener) {
             val count = getSelectedItemCount()
             // 检查是否选中全部，并联动外部 `CheckBox` 状态
-            externalCheckBox!!.isChecked = count > 0 && count == data.size
+            externalCheckBox?.isChecked = count > 0 && count == data.size
             editSelectedListener?.onSelectedItemCount(count)
         }
     }
@@ -354,7 +356,7 @@ abstract class BaseQuickEditModeAdapter<T : Selected, VH : BaseViewHolder>(
      * 获取已选择的Item[selectedList]
      */
     open fun getSelectedList(): List<Selected> {
-        return selectedList
+        return selectedList.values.toList()
     }
 
     /**

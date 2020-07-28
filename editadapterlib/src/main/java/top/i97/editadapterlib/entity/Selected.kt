@@ -24,8 +24,6 @@ SOFTWARE.
 
 package top.i97.editadapterlib.entity
 
-import java.util.*
-
 /**
  * 选择项实体
  *
